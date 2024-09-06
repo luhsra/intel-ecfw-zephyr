@@ -119,6 +119,6 @@
 #define ADC_CH_BASE			DT_NODELABEL(adc0)
 #define PECI_0_INST			DT_NODELABEL(peci0)
 #define WDT_0				DT_NODELABEL(wdog)
-#define KSCAN_MATRIX			DT_NODELABEL(kscan0)
+#define KSCAN_MATRIX			DT_NODELABEL(kbd0)
 
 #endif /* __MEC172X_AIC_DEFS_H__ */

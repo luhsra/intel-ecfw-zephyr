@@ -27,7 +27,7 @@
 #define MAX_PERIPH_HANDLERS       2u
 
 /* TODO: Check if we can replace these macros */
-#ifdef CONFIG_SOC_FAMILY_MEC
+#ifdef CONFIG_SOC_FAMILY_MICROCHIP_MEC
 #define KBC_IBF_DATA(x)           (((x) >> E8042_ISR_DATA_POS) & 0xFFU)
 #define KBC_CMD_DATA(x)           ((x) & 0xFU)
 #endif

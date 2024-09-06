@@ -7,7 +7,7 @@ target_sources(app
     ${CMAKE_CURRENT_LIST_DIR}/board.h
     )
 
-if(CONFIG_SOC_FAMILY_MEC)
+if(CONFIG_SOC_FAMILY_MICROCHIP_MEC)
 
 # RVP + MECC
 include(${CMAKE_CURRENT_LIST_DIR}/microchip/mec15xx_mecc/CMakeLists.txt)
