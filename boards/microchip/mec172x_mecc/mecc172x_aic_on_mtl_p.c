@@ -172,10 +172,11 @@ int board_init(void)
 		return ret;
 	}
 
-	ret = i2c_hub_config(I2C_1);
-	if (ret) {
-		return ret;
-	}
+	// TODO: extend VA to support this
+	//ret = i2c_hub_config(I2C_1);
+	//if (ret) {
+	//	return ret;
+	//}
 
 	ret = read_board_id();
 	if (ret) {
