@@ -37,6 +37,7 @@ dtc = find_program('dtc')
 compile_zephyr_app = ara_zephyr_apps.get_variable('compile_zephyr_app')
 
 zephyr_targets = []
+zephyr_only_targets = []
 
 if toolchains.get_variable('arm_enabled')
     cflags = '-mfloat-abi=soft -Wno-ignored-attributes'
@@ -81,13 +82,19 @@ if toolchains.get_variable('arm_enabled')
         ]]
     )
 
-    zephyr_targets += target
+    zephyr_targets += {'ll': target[0], 'config': target[1], 'cloc_app': [
+        app / 'app',
+        app / 'boards',
+        app / 'drivers',
+        app / 'misc',
+    ]}
+    zephyr_only_targets += [target]
 
 endif
 
 nop = find_program('true')
 all_apps = 'intel-ecfw-zephyr'
-run_target(all_apps, command: nop, depends: zephyr_targets)
+run_target(all_apps, command: nop, depends: zephyr_only_targets)
 summary('Build all ARA Zephyr apps', f'meson compile @all_apps@')
 
 
