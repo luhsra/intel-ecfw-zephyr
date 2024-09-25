@@ -77,3 +77,5 @@ obj/*
 .project
 .pydevproject
 .settings/*
+
+.meson-subproject-wrap-hash.txt
