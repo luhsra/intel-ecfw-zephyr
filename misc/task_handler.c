@@ -125,35 +125,48 @@ static struct task_info tasks[] = {
 
 void start_all_tasks(void)
 {
-	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-		if (tasks[i].thread_id) {
-#ifdef CONFIG_THREAD_NAME
-			k_thread_name_set(tasks[i].thread_id, tasks[i].tagname);
-			LOG_DBG("%s %s", __func__, tasks[i].tagname);
-#endif
-			k_thread_start(tasks[i].thread_id);
-		}
-	}
+// 	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+// 		if (tasks[i].thread_id) {
+// #ifdef CONFIG_THREAD_NAME
+// 			k_thread_name_set(tasks[i].thread_id, tasks[i].tagname);
+// 			LOG_DBG("%s %s", __func__, tasks[i].tagname);
+// #endif
+// 			k_thread_start(tasks[i].thread_id);
+// 		}
+// 	}
+	
+	k_thread_start(kbc_thrd_id);
+	k_thread_start(kb_thrd_id);
+	k_thread_start(postcode_thrd_id);
+	k_thread_start(periph_thrd_id);
+	k_thread_start(pwrseq_thrd_id);
+	k_thread_start(oobmngr_thrd_id);
+	k_thread_start(smchost_thrd_id);
+	k_thread_start(thermal_thrd_id);
 }
 
 void suspend_all_tasks(void)
 {
-	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-		if (tasks[i].can_suspend) {
-			k_thread_suspend(tasks[i].thread_id);
-			LOG_INF("%p suspended", tasks[i].thread_id);
-		}
-	}
+	// for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+	// 	if (tasks[i].can_suspend) {
+	// 		k_thread_suspend(tasks[i].thread_id);
+	// 		LOG_INF("%p suspended", tasks[i].thread_id);
+	// 	}
+	// }
+	
+	k_thread_suspend(pwrseq_thrd_id);
 }
 
 void resume_all_tasks(void)
 {
-	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-		if (tasks[i].can_suspend) {
-			k_thread_resume(tasks[i].thread_id);
-			LOG_INF("%p resumed", tasks[i].thread_id);
-		}
-	}
+	// for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+	// 	if (tasks[i].can_suspend) {
+	// 		k_thread_resume(tasks[i].thread_id);
+	// 		LOG_INF("%p resumed", tasks[i].thread_id);
+	// 	}
+	// }
+	
+	k_thread_resume(pwrseq_thrd_id);
 }
 
 void wake_task(const char *tagname)
@@ -164,4 +177,13 @@ void wake_task(const char *tagname)
 			break;
 		}
 	}
+	
+	// k_wakeup(kbc_thrd_id);
+	// k_wakeup(kb_thrd_id);
+	// k_wakeup(postcode_thrd_id);
+	// k_wakeup(periph_thrd_id);
+	// k_wakeup(pwrseq_thrd_id);
+	// k_wakeup(oobmngr_thrd_id);
+	// k_wakeup(smchost_thrd_id);
+	// k_wakeup(thermal_thrd_id);
 }

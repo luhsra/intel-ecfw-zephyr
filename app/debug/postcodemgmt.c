@@ -129,8 +129,7 @@ void postcode_thread(void *p1, void *p2, void *p3)
 	}
 
 	espihub_add_postcode_handler(update_postcode);
-	// TODO Why is VA crashing here?
-	//k_sem_init(&update_lock, 0, 1);
+	k_sem_init(&update_lock, 0, 1);
 
 	while (true) {
 		/* Wait until postcode update is received */
