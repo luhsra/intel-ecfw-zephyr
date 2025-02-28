@@ -1,0 +1,9 @@
+[
+  {
+    "key": {"call_path":"CallPath()","func":"k_sem_take","inst":"","nr":1},
+    "value": {"type": "value", "name": "-1"}
+  }, {
+    "key": {"call_path":"CallPath()","func":"k_msgq_get","inst":"","nr":2},
+    "value": {"type": "value", "name": "-1"}
+  }
+]

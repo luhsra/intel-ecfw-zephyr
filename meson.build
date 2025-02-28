@@ -136,7 +136,8 @@ if toolchains.get_variable('arm_enabled')
     'config_orig': config,
     # native_sim kernel ll to allow SSE
     'kernel_ll': kernel_ll_sim,
-    'config': config_sim
+    'config': config_sim,
+    'va_corrections': files('va_map.json')[0]
     }
     zephyr_only_targets += [target]
     kernel_targets += kernel_ll
