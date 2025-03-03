@@ -35,4 +35,9 @@ void resume_all_tasks(void);
  */
 void wake_task(const char *tagname);
 
+
+// workaround for missing IRQs because of instance analysis not running on whole system!
+void setup_interrupts();
+void enable_interrupts();
+
 #endif /* __TASK_HANDLER_H__ */

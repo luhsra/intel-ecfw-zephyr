@@ -50,6 +50,12 @@ config BOARD_LOG_LEVEL
 	help
 	  Set log level for board initialization module.
 
+config ARA
+	bool "Modify app to allow ARA analysis"
+	  default false
+	  help
+		Add changes to the app to fix ValueAnalyzer and simplify app logic
+
 endmenu
 
 rsource "drivers/Kconfig"

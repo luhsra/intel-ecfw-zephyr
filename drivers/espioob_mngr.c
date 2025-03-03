@@ -382,10 +382,9 @@ static void oobmngr_init(void)
 	k_mutex_init(&master_pmc.txn_lock);
 	k_mutex_init(&master_csme.txn_lock);
 
-	// TODO: Why is VA crashing here
-	//k_sem_init(&master_hw.txn_sync, 1, 1);
-	//k_sem_init(&master_pmc.txn_sync, 1, 1);
-	//k_sem_init(&master_csme.txn_sync, 1, 1);
+	k_sem_init(&master_hw.txn_sync, 1, 1);
+	k_sem_init(&master_pmc.txn_sync, 1, 1);
+	k_sem_init(&master_csme.txn_sync, 1, 1);
 }
 
 

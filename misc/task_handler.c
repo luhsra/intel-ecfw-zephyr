@@ -125,59 +125,61 @@ static struct task_info tasks[] = {
 
 void start_all_tasks(void)
 {
-// 	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-// 		if (tasks[i].thread_id) {
-// #ifdef CONFIG_THREAD_NAME
-// 			k_thread_name_set(tasks[i].thread_id, tasks[i].tagname);
-// 			LOG_DBG("%s %s", __func__, tasks[i].tagname);
-// #endif
-// 			k_thread_start(tasks[i].thread_id);
-// 		}
-// 	}
-	
+#ifdef CONFIG_ARA
 	k_thread_start(kbc_thrd_id);
 	k_thread_start(kb_thrd_id);
-	k_thread_start(postcode_thrd_id);
-	k_thread_start(periph_thrd_id);
-	k_thread_start(pwrseq_thrd_id);
-	k_thread_start(oobmngr_thrd_id);
-	k_thread_start(smchost_thrd_id);
-	k_thread_start(thermal_thrd_id);
+	//k_thread_start(postcode_thrd_id);
+	//k_thread_start(periph_thrd_id);
+	//k_thread_start(pwrseq_thrd_id);
+	//k_thread_start(oobmngr_thrd_id);
+	//k_thread_start(smchost_thrd_id);
+	//k_thread_start(thermal_thrd_id);
+#else
+	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+		if (tasks[i].thread_id) {
+#ifdef CONFIG_THREAD_NAME
+			k_thread_name_set(tasks[i].thread_id, tasks[i].tagname);
+			LOG_DBG("%s %s", __func__, tasks[i].tagname);
+#endif
+			k_thread_start(tasks[i].thread_id);
+		}
+	}
+#endif
+
 }
 
 void suspend_all_tasks(void)
 {
-	// for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-	// 	if (tasks[i].can_suspend) {
-	// 		k_thread_suspend(tasks[i].thread_id);
-	// 		LOG_INF("%p suspended", tasks[i].thread_id);
-	// 	}
-	// }
-	
+#ifdef CONFIG_ARA
 	k_thread_suspend(pwrseq_thrd_id);
+#else
+	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+		if (tasks[i].can_suspend) {
+			k_thread_suspend(tasks[i].thread_id);
+			LOG_INF("%p suspended", tasks[i].thread_id);
+		}
+	}
+#endif
+	
 }
 
 void resume_all_tasks(void)
 {
-	// for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-	// 	if (tasks[i].can_suspend) {
-	// 		k_thread_resume(tasks[i].thread_id);
-	// 		LOG_INF("%p resumed", tasks[i].thread_id);
-	// 	}
-	// }
-	
+#ifdef CONFIG_ARA
 	k_thread_resume(pwrseq_thrd_id);
+#else
+	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+		if (tasks[i].can_suspend) {
+			k_thread_resume(tasks[i].thread_id);
+			LOG_INF("%p resumed", tasks[i].thread_id);
+		}
+	}
+#endif
 }
 
 void wake_task(const char *tagname)
 {
-	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
-		if (strcmp(tasks[i].tagname, tagname) == 0) {
-			k_wakeup(tasks[i].thread_id);
-			break;
-		}
-	}
-	
+#ifdef CONFIG_ARA
 	// k_wakeup(kbc_thrd_id);
 	// k_wakeup(kb_thrd_id);
 	// k_wakeup(postcode_thrd_id);
@@ -186,4 +188,28 @@ void wake_task(const char *tagname)
 	// k_wakeup(oobmngr_thrd_id);
 	// k_wakeup(smchost_thrd_id);
 	// k_wakeup(thermal_thrd_id);
+#else
+	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
+		if (strcmp(tasks[i].tagname, tagname) == 0) {
+			k_wakeup(tasks[i].thread_id);
+			break;
+		}
+	}
+#endif
 }
+
+#ifdef CONFIG_ARA
+// workaround for missing IRQs because of instance analysis not running on whole system!
+#include <zephyr/irq.h>
+#define IRQ_KBC_HANDLER 0x40
+
+extern void kbc_handler(uint8_t, uint8_t);
+
+void setup_interrupts() {
+	IRQ_CONNECT(IRQ_KBC_HANDLER, 10, kbc_handler, 0, 0);
+}
+
+void enable_interrupts() {
+    irq_enable(IRQ_KBC_HANDLER);
+}
+#endif

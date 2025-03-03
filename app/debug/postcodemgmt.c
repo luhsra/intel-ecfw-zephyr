@@ -125,7 +125,10 @@ void postcode_thread(void *p1, void *p2, void *p3)
 	ret = port80_display_init();
 	if (ret) {
 		LOG_ERR("port80 init failed %d", ret);
+#ifndef CONFIG_ARA
 		return;
+#endif
+
 	}
 
 	espihub_add_postcode_handler(update_postcode);

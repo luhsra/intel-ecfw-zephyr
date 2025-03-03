@@ -50,6 +50,9 @@ gllvm_env = {
 
 zephyr_targets_apps = ara_zephyr_apps.get_variable('zephyr_targets')
 
+
+extra_conf = files('ara.conf')[0]
+
 zephyr_targets = []
 zephyr_only_targets = []
 kernel_targets = []
@@ -96,6 +99,7 @@ if toolchains.get_variable('arm_enabled')
                             # in https://github.com/zephyrproject-rtos/zephyr/pull/29359
                             'EXTRA_CFLAGS=-Wno-typedef-redefinition -Wno-unused-command-line-argument @0@'.format(cflags),
                             'CMAKE_EXE_LINKER_FLAGS=@0@'.format(ldflags),
+                            'EXTRA_CONF_FILE=' + extra_conf.full_path(),
         ]],
         env: gllvm_env,
     )
