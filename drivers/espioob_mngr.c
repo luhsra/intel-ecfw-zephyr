@@ -43,9 +43,12 @@ struct async_msb {
 	oob_rx_callback_handler_t fn;
 };
 
+#ifdef CONFIG_ARA // limit MSGQ size
+K_MSGQ_DEFINE(async_msgq, sizeof(struct async_msb), 1, ASYNC_MSGQ_ALIGNMENT);
+#else
 K_MSGQ_DEFINE(async_msgq, sizeof(struct async_msb), ASYNC_MSGQ_MAX_MSGS,
 	ASYNC_MSGQ_ALIGNMENT);
-
+#endif
 
 void register_oob_hndlr(uint8_t master_addr, oob_rx_callback_handler_t fn)
 {
@@ -393,11 +396,14 @@ void oobmngr_thread(void *p1, void *p2, void *p3)
 	int ret;
 	struct async_msb msg;
 
+#ifndef CONFIG_ARA // skip app logic
 	oobmngr_init();
+#endif
 
 	while (1) {
 		k_msgq_get(&async_msgq, &msg, K_FOREVER);
 
+#ifndef CONFIG_ARA // skip app logic
 		if (msg.from == OOB_SLAVE_ADDR_EC) {
 			/* OOB message from EC to master */
 			struct espi_oob_packet req = {
@@ -434,6 +440,7 @@ void oobmngr_thread(void *p1, void *p2, void *p3)
 				msg.fn(&mstr_msg, 0);
 			}
 		}
+#endif // CONFIG_ARA
 	}
 }
 

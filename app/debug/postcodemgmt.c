@@ -12,7 +12,7 @@
 #include "port80display.h"
 LOG_MODULE_REGISTER(postcode, CONFIG_POSTCODE_LOG_LEVEL);
 
-static struct k_sem update_lock;
+struct k_sem update_lock;
 /* Postcode requested to be displayed */
 static uint8_t port80_code;
 static uint8_t port81_code;
@@ -122,21 +122,22 @@ void postcode_thread(void *p1, void *p2, void *p3)
 	uint32_t disp_word;
 	int ret;
 
+#ifndef CONFIG_ARA // skip app logic
 	ret = port80_display_init();
 	if (ret) {
 		LOG_ERR("port80 init failed %d", ret);
-#ifndef CONFIG_ARA
 		return;
-#endif
 
 	}
 
 	espihub_add_postcode_handler(update_postcode);
+#endif
 	k_sem_init(&update_lock, 0, 1);
 
 	while (true) {
 		/* Wait until postcode update is received */
 		k_sem_take(&update_lock, K_FOREVER);
+#ifndef CONFIG_ARA // skip app logic
 		if (err_code) {
 			port80_code = err_code;
 			port81_code = BOARD_ERR_INDICATOR;
@@ -158,5 +159,6 @@ void postcode_thread(void *p1, void *p2, void *p3)
 			port80_display_word(disp_word);
 			LOG_DBG("PostCode:%04x", disp_word);
 		}
+#endif //CONFIG_ARA
 	}
 }

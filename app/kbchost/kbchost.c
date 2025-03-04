@@ -537,7 +537,7 @@ void to_from_host_thread(void *p1, void *p2, void *p3)
 		/* Address host requests and sends request respose
 		 * back to the host
 		 */
-#ifndef CONFIG_ARA // TODO: Timing info instead of app logic
+#ifndef CONFIG_ARA // skip app logic
 		handle_from_to_host(host_data);
 #endif	
 	}
@@ -551,6 +551,7 @@ void to_host_kb_thread(void *p1, void *p2, void *p3)
 
 	while (true) {
 		k_sem_take(&kb_p60_sem, K_FOREVER);
+#ifndef CONFIG_ARA // skip app logic
 		while (true) {
 
 			/* Process the keyboard queue. If the amount of
@@ -596,6 +597,7 @@ void to_host_kb_thread(void *p1, void *p2, void *p3)
 				break;
 			}
 		}
+#endif
 	}
 }
 
@@ -760,12 +762,9 @@ void kbc_handler(uint8_t data, uint8_t cmd_data)
 	 * data which is processed in the DEFAULT_STATE. Therefore, fe
 	 * is returned and the host does not want to process further
 	 */
-
-#ifndef CONFIG_ARA // simplify ISR
 	if (repeated_data_hack == data) {
 		return;
 	}
-#endif
 
 	repeated_data_hack = data;
 	k_msgq_put(&from_host_queue, &host_data, K_NO_WAIT);

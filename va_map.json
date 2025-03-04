@@ -15,7 +15,13 @@
     "key": {"call_path":"Callpath(to_from_host_thread)","func":"k_msgq_get","inst":"","nr":2},
     "value": {"type": "value", "name": "-1"}
   }, {
-    "key": {"call_path":"Callpath(kbc_handler)","func":"k_msgq_put","inst":"","nr":2},
+    "key": {"call_path":"Callpath(mock_oob_rx_handler)","func":"k_msgq_put","inst":"","nr":2},
+    "value": {"type": "value", "name": "0"}
+  }, {
+    "key": {"call_path":"Callpath(mock_kbc_handler)","func":"k_msgq_put","inst":"","nr":2},
+    "value": {"type": "value", "name": "0"}
+  }, {
+    "key": {"call_path":"Callpath(mock_send_to_host)","func":"k_msgq_put","inst":"","nr":2},
     "value": {"type": "value", "name": "0"}
   }, {
     "key": {"call_path":"Callpath(oobmngr_thread)","func":"k_msgq_get","inst":"","nr":2},
@@ -23,62 +29,5 @@
   }, {
     "key": {"call_path":"Callpath([__ara_fake_entry -> main])","func":"k_sleep","inst":"","nr":0},
     "value": {"type": "value", "name": "0"}
-  }, {
-    "key": {"call_path":"Callpath([to_from_host_thread -> handle_from_to_host], [handle_from_to_host -> process_keyboard_data], [process_keyboard_data -> kbc_set_leds])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([to_from_host_thread -> handle_from_to_host], [handle_from_to_host -> send_kb_to_host])","func":"k_msgq_put","inst":"","nr":2},
-    "value": {"type": "value", "name": "0"}
-  }, {
-    "key": {"call_path":"Callpath(pwrseq_thread)","func":"k_msleep","inst":"","nr":0},
-    "value": {"type": "value", "name": "10"}
-  }, {
-    "key": {"call_path":"Callpath(smchost_thread)","func":"k_msleep","inst":"","nr":0},
-    "value": {"type": "value", "name": "10"}
-  }, {
-    "key": {"call_path":"Callpath(thermalmgmt_thread)","func":"k_msleep","inst":"","nr":0},
-    "value": {"type": "value", "name": "250"}
-  }, {
-    "key": {"call_path":"Callpath(thermalmgmt_thread)","func":"k_sleep","inst":"","nr":0},
-    "value": {"type": "value", "name": "8"}
-  }, {
-    "key": {"call_path":"Callpath([pwrseq_thread -> pwrseq_update], [pwrseq_update -> pwrseq_handle_transition_to_s4], [pwrseq_handle_transition_to_s4 -> power_off], [power_off -> kbc_disable_interface], [kbc_disable_interface -> ps2_keyboard_disable], [ps2_keyboard_disable -> do_control_callback])","func":"k_sleep","inst":"","nr":0},
-    "value": {"type": "value", "name": "1"}
-  }, {
-    "key": {"call_path":"Callpath([pwrseq_thread -> pwrseq_update], [pwrseq_update -> pwrseq_handle_transition_to_s0], [pwrseq_handle_transition_to_s0 -> resume], [resume -> enqueue_sci])","func":"k_msgq_put","inst":"","nr":2},
-    "value": {"type": "value", "name": "0"}
-  }, {
-    "key": {"call_path":"Callpath([smchost_thread -> smchost_process_tasks], [smchost_process_tasks -> service_system_acpi_cmds], [service_system_acpi_cmds -> smchost_cmd_handler], [smchost_cmd_handler -> acpi_query_ec], [acpi_query_ec -> send_sci_events])","func":"k_msgq_get","inst":"","nr":2},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([smchost_thread -> smchost_process_tasks], [smchost_process_tasks -> service_system_acpi_cmds], [service_system_acpi_cmds -> smchost_cmd_handler], [smchost_cmd_handler -> smchost_cmd_pm_handler], [smchost_cmd_pm_handler -> cs_entry], [cs_entry -> kbc_get_leds])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([smchost_thread -> smchost_process_tasks], [smchost_process_tasks -> service_system_acpi_cmds], [service_system_acpi_cmds -> smchost_cmd_handler], [smchost_cmd_handler -> smchost_cmd_pm_handler], [smchost_cmd_pm_handler -> cs_exit], [cs_exit -> kbc_set_leds])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([smchost_thread -> smchost_process_tasks], [smchost_process_tasks -> service_system_acpi_cmds], [service_system_acpi_cmds -> smchost_cmd_handler], [smchost_cmd_handler -> smchost_cmd_pm_handler], [smchost_cmd_pm_handler -> cs_entry], [cs_entry -> kbc_set_leds])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([smchost_thread -> smchost_process_tasks], [smchost_process_tasks -> service_system_acpi_cmds], [service_system_acpi_cmds -> smchost_cmd_handler], [smchost_cmd_handler -> smchost_cmd_pm_handler], [smchost_cmd_pm_handler -> pg3_prog_counter], [pg3_prog_counter -> pseudo_g3_program_counter])","func":"k_timer_start","inst":"","nr":1},
-    "value": {"type": "value", "name": "1000"}
-  }, {
-    "key": {"call_path":"Callpath([smchost_thread -> smchost_process_tasks], [smchost_process_tasks -> service_system_acpi_cmds], [service_system_acpi_cmds -> smchost_cmd_handler], [smchost_cmd_handler -> smchost_cmd_pm_handler], [smchost_cmd_pm_handler -> pg3_prog_counter], [pg3_prog_counter -> pseudo_g3_program_counter])","func":"k_timer_start","inst":"","nr":2},
-    "value": {"type": "value", "name": "0"}
-  }, {
-    "key": {"call_path":"Callpath([thermalmgmt_thread -> manage_cpu_thermal], [manage_cpu_thermal -> peci_get_temp], [peci_get_temp -> peci_exec_transfer])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([thermalmgmt_thread -> manage_pch_temperature], [manage_pch_temperature -> oob_send_sync])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([thermalmgmt_thread -> manage_cpu_thermal], [manage_cpu_thermal -> peci_get_temp], [peci_get_temp -> peci_get_tjmax], [peci_get_tjmax -> peci_rdpkg_config], [peci_rdpkg_config -> peci_exec_transfer_retry])","func":"k_mutex_lock","inst":"","nr":1},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([thermalmgmt_thread -> manage_cpu_thermal], [manage_cpu_thermal -> enqueue_sci])","func":"k_msgq_put","inst":"","nr":2},
-    "value": {"type": "value", "name": "-1"}
-  }, {
-    "key": {"call_path":"Callpath([thermalmgmt_thread -> manage_pch_temperature], [manage_pch_temperature -> oob_send_sync])","func":"k_sem_take","inst":"","nr":1},
-    "value": {"type": "value", "name": "1000"}
   }
 ]

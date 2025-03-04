@@ -21,7 +21,7 @@ LOG_MODULE_REGISTER(ecfw, CONFIG_EC_LOG_LEVEL);
 int main(void)
 {
 	int ret;
-#ifndef CONFIG_ARA
+#ifndef CONFIG_ARA // skip app logic
 	/* Delayed start for debug */
 
 	k_sleep(K_SECONDS(CONFIG_EC_DELAYED_BOOT));

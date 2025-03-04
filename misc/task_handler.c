@@ -128,12 +128,12 @@ void start_all_tasks(void)
 #ifdef CONFIG_ARA
 	k_thread_start(kbc_thrd_id);
 	k_thread_start(kb_thrd_id);
-	//k_thread_start(postcode_thrd_id);
-	//k_thread_start(periph_thrd_id);
-	//k_thread_start(pwrseq_thrd_id);
-	//k_thread_start(oobmngr_thrd_id);
-	//k_thread_start(smchost_thrd_id);
-	//k_thread_start(thermal_thrd_id);
+	k_thread_start(postcode_thrd_id);
+	k_thread_start(periph_thrd_id);
+	//k_thread_start(pwrseq_thrd_id); // sleep-time-based
+	k_thread_start(oobmngr_thrd_id);
+	k_thread_start(smchost_thrd_id);
+	//k_thread_start(thermal_thrd_id); // sleep-time-based
 #else
 	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
 		if (tasks[i].thread_id) {
@@ -179,16 +179,7 @@ void resume_all_tasks(void)
 
 void wake_task(const char *tagname)
 {
-#ifdef CONFIG_ARA
-	// k_wakeup(kbc_thrd_id);
-	// k_wakeup(kb_thrd_id);
-	// k_wakeup(postcode_thrd_id);
-	// k_wakeup(periph_thrd_id);
-	// k_wakeup(pwrseq_thrd_id);
-	// k_wakeup(oobmngr_thrd_id);
-	// k_wakeup(smchost_thrd_id);
-	// k_wakeup(thermal_thrd_id);
-#else
+#ifndef CONFIG_ARA
 	for (int i = 0; i < ARRAY_SIZE(tasks); i++) {
 		if (strcmp(tasks[i].tagname, tagname) == 0) {
 			k_wakeup(tasks[i].thread_id);
@@ -202,14 +193,70 @@ void wake_task(const char *tagname)
 // workaround for missing IRQs because of instance analysis not running on whole system!
 #include <zephyr/irq.h>
 #define IRQ_KBC_HANDLER 0x40
+#define IRQ_POSTCODE_HANDLER 0x41
+#define IRQ_GPIO_HANDLER 0x42
+#define IRQ_SMCHOST_HANDLER 0x43
+#define IRQ_OOB_HANDLER 0x44
+#define IRQ_TO_HOST_HANDLER 0x45
 
-extern void kbc_handler(uint8_t, uint8_t);
+extern struct k_msgq from_host_queue;
+extern struct k_msgq to_host_kb_queue;
+extern struct k_sem kb_p60_sem;
+extern struct k_sem update_lock;
+extern struct k_sem btn_debounce_lock;
+extern struct k_sem acpi_lock;
+extern struct k_msgq async_msgq;
+
+void mock_kbc_handler()
+{
+	int data = 0;
+	k_msgq_put(&from_host_queue, &data, K_NO_WAIT);
+	irq_disable(IRQ_KBC_HANDLER);
+}
+void mock_send_to_host()
+{
+	int data = 0;
+	k_msgq_put(&to_host_kb_queue, &data, K_NO_WAIT);
+	k_sem_give(&kb_p60_sem);
+	irq_disable(IRQ_TO_HOST_HANDLER);
+}
+void mock_update_postcode()
+{
+	k_sem_give(&update_lock);
+	irq_disable(IRQ_POSTCODE_HANDLER);
+}
+void mock_gpio_level_change_callback()
+{
+	k_sem_give(&btn_debounce_lock);
+	irq_disable(IRQ_GPIO_HANDLER);
+}
+void mock_smchost_signal_request(void)
+{
+	k_sem_give(&acpi_lock);
+	irq_disable(IRQ_SMCHOST_HANDLER);
+}
+void mock_oob_rx_handler()
+{
+	int msg = 0;
+	k_msgq_put(&async_msgq, &msg, K_NO_WAIT);
+	irq_disable(IRQ_OOB_HANDLER);
+}
 
 void setup_interrupts() {
-	IRQ_CONNECT(IRQ_KBC_HANDLER, 10, kbc_handler, 0, 0);
+	IRQ_CONNECT(IRQ_KBC_HANDLER, 10, 		mock_kbc_handler, 0, 0);
+	IRQ_CONNECT(IRQ_TO_HOST_HANDLER, 10, mock_send_to_host, 0, 0);
+	IRQ_CONNECT(IRQ_POSTCODE_HANDLER, 10, 	mock_update_postcode, 0, 0);
+	IRQ_CONNECT(IRQ_GPIO_HANDLER, 10, 		mock_gpio_level_change_callback, 0, 0);
+	IRQ_CONNECT(IRQ_SMCHOST_HANDLER, 10, 	mock_smchost_signal_request, 0, 0);
+	IRQ_CONNECT(IRQ_OOB_HANDLER, 10, 		mock_oob_rx_handler, 0, 0);
 }
 
 void enable_interrupts() {
-    irq_enable(IRQ_KBC_HANDLER);
+	irq_enable(IRQ_KBC_HANDLER);
+	irq_enable(IRQ_TO_HOST_HANDLER);
+	//irq_enable(IRQ_POSTCODE_HANDLER);
+	//irq_enable(IRQ_GPIO_HANDLER);
+	//irq_enable(IRQ_SMCHOST_HANDLER);
+	//irq_enable(IRQ_OOB_HANDLER);
 }
 #endif

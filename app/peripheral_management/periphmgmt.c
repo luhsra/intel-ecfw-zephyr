@@ -60,7 +60,7 @@ static struct btn_info btn_lst[] = {
 };
 
 static int debouncing_ongoing;
-static struct k_sem btn_debounce_lock;
+struct k_sem btn_debounce_lock;
 static uint8_t io_sw_status;
 
 static void notify_btn_handlers(uint8_t btn_idx)
@@ -255,20 +255,24 @@ void periph_thread(void *p1, void *p2, void *p3)
 {
 	uint32_t period = *(uint32_t *)p1;
 
+#ifndef CONFIG_ARA // skip app logic
 	pwrbtn_init();
 
 	/* Update the switch status */
 	update_switch_status();
+#endif
 
 	k_sem_init(&btn_debounce_lock, 0, 1);
 	while (true) {
 		/* Wait until ISR occurs to start debouncing */
 		k_sem_take(&btn_debounce_lock, K_FOREVER);
 
+#ifndef CONFIG_ARA // skip app logic
 		do {
 			/* Perform debounce for all buttons */
 			k_msleep(period);
 			debounce_pins();
 		} while (is_debouncing());
+#endif
 	}
 }
