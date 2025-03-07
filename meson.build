@@ -45,6 +45,7 @@ gclang_cpp = gllvm.get_variable('gclang_cpp')
 get_bc = gllvm.get_variable('get_bc')
 gllvm_env = {
   'LLVM_COMPILER_PATH': llvm_bindir,
+  'GLLVM_OBJCOPY': toolchains.get_variable('llvm_objcopy').full_path(),
   'CCACHE_DISABLE': '1',
 }
 
@@ -138,9 +139,9 @@ if toolchains.get_variable('arm_enabled')
     ],
     'kernel_ll_orig': kernel_ll,
     'config_orig': config,
-    # native_sim kernel ll to allow SSE
-    'kernel_ll': kernel_ll_sim,
-    'config': config_sim,
+    # could also use kernel_ll_sim, config_sim
+    'kernel_ll': kernel_ll,
+    'config': config, _sim
     'va_corrections': files('va_map.json')[0]
     }
     zephyr_only_targets += [target]

@@ -527,9 +527,10 @@ static void handle_from_to_host(struct host_byte host_data)
 void to_from_host_thread(void *p1, void *p2, void *p3)
 {
 	struct host_byte host_data;
-
+#ifndef CONFIG_ARA // skip app logic
 	kbc_init();
 	espihub_add_kbc_handler(kbc_handler);
+#endif
 
 	while (true) {
 		k_msgq_get(&from_host_queue, &host_data, K_FOREVER);
