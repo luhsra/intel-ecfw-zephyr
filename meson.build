@@ -141,7 +141,7 @@ if toolchains.get_variable('arm_enabled')
     'config_orig': config,
     # could also use kernel_ll_sim, config_sim
     'kernel_ll': kernel_ll,
-    'config': config, _sim
+    'config': config,
     'va_corrections': files('va_map.json')[0]
     }
     zephyr_only_targets += [target]
