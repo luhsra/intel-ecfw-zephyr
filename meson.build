@@ -121,15 +121,6 @@ if toolchains.get_variable('arm_enabled')
     )
 
     config = target[1]
-    
-    # use native_sim build kernel
-    foreach tgt : zephyr_targets_apps
-       name = fs.stem(tgt['ll'].full_path())
-       if name == 'native_sim-intel-ecfw-zephyr-dummy'
-        config_sim = tgt['config']
-        kernel_ll_sim = tgt['kernel_ll']
-      endif
-    endforeach
 
     zephyr_targets += {'ll': target[0], 'cloc_app': [
         app / 'app',
@@ -137,9 +128,6 @@ if toolchains.get_variable('arm_enabled')
         app / 'drivers',
         app / 'misc',
     ],
-    'kernel_ll_orig': kernel_ll,
-    'config_orig': config,
-    # could also use kernel_ll_sim, config_sim
     'kernel_ll': kernel_ll,
     'config': config,
     'va_corrections': files('va_map.json')[0]
