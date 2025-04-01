@@ -211,35 +211,29 @@ void mock_kbc_handler()
 {
 	int data = 0;
 	k_msgq_put(&from_host_queue, &data, K_NO_WAIT);
-	irq_disable(IRQ_KBC_HANDLER);
 }
 void mock_send_to_host()
 {
 	int data = 0;
 	k_msgq_put(&to_host_kb_queue, &data, K_NO_WAIT);
 	k_sem_give(&kb_p60_sem);
-	irq_disable(IRQ_TO_HOST_HANDLER);
 }
 void mock_update_postcode()
 {
 	k_sem_give(&update_lock);
-	irq_disable(IRQ_POSTCODE_HANDLER);
 }
 void mock_gpio_level_change_callback()
 {
 	k_sem_give(&btn_debounce_lock);
-	irq_disable(IRQ_GPIO_HANDLER);
 }
 void mock_smchost_signal_request(void)
 {
 	k_sem_give(&acpi_lock);
-	irq_disable(IRQ_SMCHOST_HANDLER);
 }
 void mock_oob_rx_handler()
 {
 	int msg = 0;
 	k_msgq_put(&async_msgq, &msg, K_NO_WAIT);
-	irq_disable(IRQ_OOB_HANDLER);
 }
 
 void setup_interrupts() {

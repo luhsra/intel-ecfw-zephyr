@@ -549,10 +549,10 @@ void to_host_kb_thread(void *p1, void *p2, void *p3)
 	uint32_t kb_data;
 	uint32_t host_char;
 	uint8_t obf_retries = 0;
-
+	k_sem_init(&kb_p60_sem, 0, 1);
 	while (true) {
 		k_sem_take(&kb_p60_sem, K_FOREVER);
-#ifndef CONFIG_ARA // skip app logic
+
 		while (true) {
 
 			/* Process the keyboard queue. If the amount of
@@ -563,6 +563,7 @@ void to_host_kb_thread(void *p1, void *p2, void *p3)
 			 * and let user see keys as pressed
 			 */
 			if (k_msgq_num_used_get(&to_host_kb_queue) != 0U) {
+#ifndef CONFIG_ARA // skip app logic
 				espihub_kbc_read(E8042_OBF_HAS_CHAR,
 						 &host_char);
 				if (host_char) {
@@ -585,20 +586,22 @@ void to_host_kb_thread(void *p1, void *p2, void *p3)
 					if (pwrseq_system_state() == SYSTEM_S3_STATE) {
 						smc_generate_wake(WAKE_KBC_EVENT);
 					}
+#endif
 					/* Send more kb data to the host */
 					k_msgq_get(&to_host_kb_queue,
 						   &kb_data, K_NO_WAIT);
+#ifndef CONFIG_ARA // skip app logic
 					espihub_kbc_write(E8042_WRITE_KB_CHAR,
 							  kb_data);
 					LOG_DBG("kb data: %x", kb_data);
 					obf_retries = 0;
 				}
+#endif
 			} else {
 				/* Go to suspended state if kb queue is empty */
 				break;
 			}
 		}
-#endif
 	}
 }
 
